@@ -1,11 +1,11 @@
 /**
-  * Thank you for using the XMRig Monitor! If you have any
-  * troubles, please open an issue on GitHub and I'll see what
-  * I can do: https://github.com/JaymZZZZ/xmrig-monitor
-  *
-  * This is the setup file. The only required information is
-  * the API Endpoint address.
-  *
+ * Thank you for using the XMRig Monitor! If you have any
+ * troubles, please open an issue on GitHub and I'll see what
+ * I can do: https://github.com/JaymZZZZ/xmrig-monitor
+ *
+ * This is the setup file. The only required information is
+ * the API Endpoint address.
+ *
  */
 
 var endpointAPI = "https://URL-HERE"; 	// (required) your API Endpoint address goes here. e.g. http://192.168.1.5:11000/ or http://myproxydomain.org:8080/

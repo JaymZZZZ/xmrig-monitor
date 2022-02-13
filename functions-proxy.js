@@ -1,4 +1,4 @@
-$.getJSON(endpointAPI, function(data) {
+$.getJSON(endpointAPI, function (data) {
 
     // xmrig and worker info
     document.getElementById("version").innerHTML = data.version + ' - ' + data.kind.toUpperCase();
@@ -9,7 +9,7 @@ $.getJSON(endpointAPI, function(data) {
     // results
     document.getElementById("results").innerHTML = data.results.accepted + ' / ' + (data.results.accepted + data.results.rejected + data.results.invalid) + ' (' + Number((data.results.accepted / (data.results.accepted + data.results.rejected + data.results.invalid)) * 100).toFixed(2) + '%)';
     document.getElementById("avg_time").innerHTML = data.results.avg_time + ' seconds';
-    if (typeof(data.results.error_log) == "undefined") {
+    if (typeof (data.results.error_log) == "undefined") {
         document.getElementById("error_log_r").innerHTML = '';
     } else {
         document.getElementById("error_log_r").innerHTML = data.results.error_log;
@@ -35,7 +35,7 @@ document.getElementById("timer").innerHTML = timer + ' seconds';
 
 // alert for hashrate drop
 var audio = new Audio('media/hell.wav');
-setInterval(function() {
+setInterval(function () {
     var tot60 = (document.getElementById("tot60").innerText).replace(/\D/g, '');
     if (tot60 < alarmThreshold) {
         audio.play();
@@ -44,8 +44,8 @@ setInterval(function() {
 
 // create meta tag for auto-refresh
 if (timer > 0) {
-	var meta = document.createElement('meta');
-	meta.httpEquiv = "refresh";
-	meta.content = timer;
-	document.getElementsByTagName('head')[0].appendChild(meta);
+    var meta = document.createElement('meta');
+    meta.httpEquiv = "refresh";
+    meta.content = timer;
+    document.getElementsByTagName('head')[0].appendChild(meta);
 }
