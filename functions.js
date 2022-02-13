@@ -1,45 +1,91 @@
-$.getJSON(endpointAPI, function(data) {
+var headers = {};
+if (endpointAPIAuthToken) {
+    headers.Authorization = 'Bearer ' + endpointAPIAuthToken;
+}
 
-    // xmrig and worker info
-    document.getElementById("version").innerHTML = data.version + ' - ' + data.kind.toUpperCase();
-    document.getElementById("ua").innerHTML = data.ua;
-    document.getElementById("worker_id").innerHTML = data.worker_id;
-    document.getElementById("algo").innerHTML = data.algo;
+function nFormatter(num) {
+     if (num >= 1000000000000) {
+        return (num / 1000000000000).toFixed(2).replace(/\.00$/, '') + 'T';
+     }
+     if (num >= 1000000000) {
+        return (num / 1000000000).toFixed(2).replace(/\.00$/, '') + 'B';
+     }
+     if (num >= 1000000) {
+        return (num / 1000000).toFixed(2).replace(/\.00$/, '') + 'M';
+     }
+     if (num >= 1000) {
+        return (num / 1000).toFixed(2).replace(/\.00$/, '') + 'K';
+     }
+     return num;
+}
 
-    // results
-    document.getElementById("diff_current").innerHTML = data.results.diff_current;
-    document.getElementById("results").innerHTML = data.results.shares_good + ' / ' + data.results.shares_total + ' (' + Number((data.results.shares_good / data.results.shares_total) * 100).toFixed(2) + '%)';
-    document.getElementById("avg_time").innerHTML = data.results.avg_time + ' seconds';
-    document.getElementById("error_log_r").innerHTML = data.results.error_log;
+$.ajax({
+          url: endpointAPIconfig,
+          type: 'GET',
+          headers: headers
+    })
+    .done(function(data) {
 
-    // connection
-    document.getElementById("pool").innerHTML = data.connection.pool;
-    document.getElementById("uptime").innerHTML = (data.connection.uptime / 3600).toFixed(2) + ' hours / ' + (data.connection.uptime / 86400).toFixed(2) + ' days';
-    document.getElementById("ping").innerHTML = data.connection.ping + ' ms';
-    document.getElementById("failures").innerHTML = data.connection.failures;
-    document.getElementById("error_log_c").innerHTML = data.connection.error_log;
+                // results
+                document.getElementById("error_log_r").innerHTML = data["log-file"];
+
+                // connection
+                document.getElementById("error_log_c").innerHTML = data["log-file"];
+
+        });
+
+$.ajax({
+          url: endpointAPIsummary,
+          type: 'GET',
+	  headers: headers
+    })
+    .done(function(data) {
+
+	  	// xmrig and worker info
+    		document.getElementById("version").innerHTML = data.version + ' - ' + data.kind.toUpperCase();
+    		document.getElementById("ua").innerHTML = data.ua;
+    		document.getElementById("worker_id").innerHTML = data.worker_id;
+    		document.getElementById("algo").innerHTML = data.algo;
+
+    		// results
+    		document.getElementById("diff_current").innerHTML = nFormatter(data.results.diff_current);
+    		document.getElementById("results").innerHTML = data.results.shares_good + ' / ' + data.results.shares_total + ' (' + Number((data.results.shares_good / data.results.shares_total) * 100).toFixed(2) + '%)';
+    		document.getElementById("avg_time").innerHTML = data.results.avg_time + ' seconds';
+
+    		// connection
+    		document.getElementById("pool").innerHTML = data.connection.pool;
+    		document.getElementById("uptime").innerHTML = (data.connection.uptime / 3600).toFixed(2) + ' hours / ' + (data.connection.uptime / 86400).toFixed(2) + ' days';
+    		document.getElementById("ping").innerHTML = data.connection.ping + ' ms';
+    		document.getElementById("failures").innerHTML = data.connection.failures;
+        });
+
+$.ajax({
+          url: endpointAPIbackends,
+          type: 'GET',
+          headers: headers
+    })
+    .done(function(data) {
 
     // threads
-    var threads = data.hashrate.threads.length;
-    var row = 0;
-    if (aggregateThreads === 1) {
-        while (row < threads) {
-            var next = row + 1;
-            document.getElementById("gpu").innerHTML = document.getElementById("gpu").innerHTML + "<tr><th>" + row + " & " + (next) + "</th><td>" + (data.hashrate.threads[row][0] + data.hashrate.threads[next][0]).toFixed(1) + "</td><td>" + (data.hashrate.threads[row][1] + data.hashrate.threads[next][1]).toFixed(1) + "</td><td>" + (data.hashrate.threads[row][2] + data.hashrate.threads[next][2]).toFixed(1) + "</td></tr>";
-            row = row + 2;
-        }
-    } else {
-        while (row < threads) {
-            document.getElementById("gpu").innerHTML = document.getElementById("gpu").innerHTML + "<tr><th>" + row + "</th><td>" + data.hashrate.threads[row][0] + "</td><td>" + data.hashrate.threads[row][1] + "</td><td>" + data.hashrate.threads[row][2] + "</td></tr>";
-            row++;
-        }
-    }
+    $.each(data, function (key, row){
 
+	if(row.hashrate != null){
 
-    // write totals
-    document.getElementById("gpu").innerHTML = document.getElementById("gpu").innerHTML + "<tr><th>Totals</th><th id='tot10'>" + Number(data.hashrate.total[0]).toFixed(1) + "</th><th id='tot60'>" + Number(data.hashrate.total[1]).toFixed(1) + "</th><th id='tot900'>" + Number(data.hashrate.total[2]).toFixed(1); + "</th></tr>";
+	    if (aggregateThreads === 1) {
+                    document.getElementById("gpu").innerHTML = document.getElementById("gpu").innerHTML + "<tr><th>" + row.type + "</th><td>" + row.hashrate[0] + "</td><td>" + row.hashrate[1] + "</td><td>" + row.hashrate[2] + "</td></tr>";
+	    } else {
+	        $.each(row.threads, function (id, thread) {
+                    document.getElementById("gpu").innerHTML = document.getElementById("gpu").innerHTML + "<tr><th>" + row.type + " " + id + "</th><td>" + thread.hashrate[0] + "</td><td>" + thread.hashrate[1] + "</td><td>" + thread.hashrate[2] + "</td></tr>";
+                });
+	    }
+
+            document.getElementById("gpu").innerHTML = document.getElementById("gpu").innerHTML + "<tr><th>Totals (" + row.type + ")</th><th id='tot10'>" + Number(row.hashrate[0]).toFixed(1) + "</th><th id='tot60'>" + Number(row.hashrate[1]).toFixed(1) + "</th><th id='tot900'>" + Number(row.hashrate[2]).toFixed(1); + "</th></tr>";
+	}
+
+    });
 
 });
+
 
 // footer information
 document.getElementById("api").innerHTML = endpointAPI;
