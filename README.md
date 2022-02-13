@@ -14,6 +14,11 @@ The monitor comes with embedded auto-refresh (default 60 seconds) that can be tu
 ## Optional features
 You can use these features by changing the necessary values in `variables.js`.
 
+### Auth Token
+It is highly recommended that you enable auth token for your HTTP API. It will allow for two things
+* More security (this is important)
+* Ability to read some config data for this script (only really needed to see the path to the logfiles)
+
 ### Alarm
 You can setup a hashrate threshold for your monitor by changing the variable `alarmThreshold`. If the 10-seconds average (60-minutes average for proxy) goes below the threshold, the tab will try to play a sound. Works pretty well with the auto-refresh feature.
 
@@ -27,4 +32,4 @@ You can setup the monitor to show two threads in a single row, instead of showin
 # Donate
 If this simple monitor helped you any way, consider tipping me some pizza change!
 
-XMR: 8BTcfC6b3dGMvfMwaVub8yJbr4tAC6ggHGMv6yJjy9eC8jbApCz15x66XpPrhBEpV85hyeHMFeCYpdWFv5WBNc7t4YM9k8Z
+XMR: 8C4edAc87DTBECVY3eXTZe4iaW8vyrwjhEUHEzB4Dg3pEFLsETLTzE91zbCEaJpau8DRCzYVSoBPiNh8c5ouUfQzAXYZhBe
