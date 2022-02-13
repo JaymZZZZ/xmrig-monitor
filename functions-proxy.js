@@ -34,12 +34,7 @@ $.ajax({
         // results
         document.getElementById("results").innerHTML = data.results.accepted + ' / ' + (data.results.accepted + data.results.rejected + data.results.invalid) + ' (' + Number((data.results.accepted / (data.results.accepted + data.results.rejected + data.results.invalid)) * 100).toFixed(2) + '%)';
         document.getElementById("avg_time").innerHTML = data.results.avg_time + ' seconds';
-        if (typeof (data.results.error_log) == "undefined") {
-            document.getElementById("error_log_r").innerHTML = '';
-        } else {
-            document.getElementById("error_log_r").innerHTML = data.results.error_log;
-            alert(data.results.error_log);
-        }
+
         // connection
         document.getElementById("miners").innerHTML = data.miners.now + ' miners (max: ' + data.miners.max + ')';
         document.getElementById("uptime").innerHTML = (data.uptime / 3600).toFixed(2) + ' hours / ' + (data.uptime / 86400).toFixed(2) + ' days';
